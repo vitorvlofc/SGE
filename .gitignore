@@ -1,0 +1,17 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html# Created by venv; see https://docs.python.org/3/library/venv.html
+
+# Ambiente virtual
+venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Banco de dados
+*.sqlite3
+
+# Arquivos sensíveis
+.env
+
+# Arquivos de sistema
+.DS_Store
