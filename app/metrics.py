@@ -7,7 +7,6 @@ from products.models import Product
 from outflows.models import Outflow
 
 
-
 def get_product_metrics():
     products = Product.objects.all()
     total_cost_price = sum(product.cost_price * product.quantity for product in products)
@@ -21,6 +20,7 @@ def get_product_metrics():
         total_quantity=total_quantity,
         total_profit=f'R$ {number_format(total_profit, decimal_pos=2, force_grouping=True)}',
     )
+
 
 def get_sales_metrics():
     outflows = Outflow.objects.all()
@@ -36,6 +36,7 @@ def get_sales_metrics():
         total_sales_value=f'R$ {number_format(total_sales_value, decimal_pos=2, force_grouping=True)}',
         total_sales_profit=f'R$ {number_format(total_sales_profit, decimal_pos=2, force_grouping=True)}',
     )
+
 
 def get_daily_sales_data():
 
@@ -90,6 +91,7 @@ def get_daily_sales_quantity_data():
 
     )
 
+
 def get_graphic_product_category_metric():
 
     categories = Category.objects.all()
@@ -118,4 +120,3 @@ def get_graphic_product_brand_metric():
         for brand in brands
 
     }
-

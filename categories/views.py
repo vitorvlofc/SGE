@@ -11,16 +11,14 @@ class CategoryListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 10
     permission_required = 'categories.view_category'
 
-
     def get_queryset(self):
         queryset = super().get_queryset()
         name = self.request.GET.get('name')
 
         if name:
             queryset = queryset.filter(name__icontains=name)
-            
+
         return queryset
-    
 
 
 class CategoryCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -43,7 +41,6 @@ class CategoryUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView
     form_class = forms.CategoryForm
     permission_required = 'categories.change_category'
     success_url = reverse_lazy('category_list')
-
 
 
 class CategoryDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):

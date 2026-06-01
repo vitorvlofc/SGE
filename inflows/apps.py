@@ -5,4 +5,4 @@ class InflowsConfig(AppConfig):
     name = 'inflows'
 
     def ready(self):
-        import inflows.signals
+        pass
