@@ -2,35 +2,43 @@
 
 {% block content %}
 
-{% include 'components/_product_metrics.html' %}
-{% include 'components/_sales_metrics.html' %}
+{% if perms.products.view_product and perms.inflows.view_inflow %}
+    {% include 'components/_product_metrics.html' %}
+
+{% endif %}
+
+{% if perms.outflows.view_outflow %}
+    {% include 'components/_sales_metrics.html' %}
+{% endif %}
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="row mt-4 justify-content-center">
+{% if perms.outflows.view_outflow %}
+    <div class="row mt-4 justify-content-center">
 
-    <div class="col-md-6 text-center">
+        <div class="col-md-6 text-center">
 
-        <h5 class="text-center mb-3">
-            Valor de vendas (Últimos 7 dias)
-        </h5>
+            <h5 class="text-center mb-3">
+                Valor de vendas (Últimos 7 dias)
+            </h5>
 
-        <canvas id="dailySalesChart"></canvas>
+            <canvas id="dailySalesChart"></canvas>
+
+        </div>
+
+        <div class="col-md-6 text-center">
+
+            <h5 class="text-center mb-3">
+                Quantidade de Vendas Diárias
+            </h5>
+
+            <canvas id="dailySalesQuantityChart"></canvas>
+
+        </div>
 
     </div>
-
-    <div class="col-md-6 text-center">
-
-        <h5 class="text-center mb-3">
-            Quantidade de Vendas Diárias
-        </h5>
-
-        <canvas id="dailySalesQuantityChart"></canvas>
-
-    </div>
-
-</div>
+{% endif %}
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -126,123 +134,125 @@
     });
 </script>
 
+{% if perms.outflows.view_outflow %}
+    <div class="row mt-4 justify-content-center">
 
-<div class="row mt-4 justify-content-center">
+        <div class="col-md-6 text-center">
 
-    <div class="col-md-6 text-center">
+            <h5 class="mb-3">
+                Produtos por Categoria
+                <div class="mb4"></div>
+            </h5>
+            <div class="embed-responsive embed-responsive1by1" style="width: 400px; display: inline-block;">
 
-        <h5 class="mb-3">
-            Produtos por Categoria
-            <div class="mb4"></div>
-        </h5>
-        <div class="embed-responsive embed-responsive1by1" style="width: 400px; display: inline-block;">
+            <canvas id="ProductByCategoryChart" class="embed-responsive-item"></canvas>
 
-        <canvas id="ProductByCategoryChart" class="embed-responsive-item"></canvas>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-6 text-center">
-
-        <h5 class="mb-3">
-            Produtos por Marca
-            <div class="mb4"></div>
-        </h5>
-        <div style="width: 400px; display: inline-block;">
-
-        <canvas id="ProductByBrandChart" class="embed-responsive-item"></canvas>
+            </div>
 
         </div>
 
+        <div class="col-md-6 text-center">
+
+            <h5 class="mb-3">
+                Produtos por Marca
+                <div class="mb4"></div>
+            </h5>
+            <div style="width: 400px; display: inline-block;">
+
+            <canvas id="ProductByBrandChart" class="embed-responsive-item"></canvas>
+
+            </div>
+
+        </div>
+
+        <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+
+                var productCountByCategory = JSON.parse(
+                '{{ graphic_product_category_metric|safe }}'
+            );
+
+            var productCountByBrand = JSON.parse(
+                '{{ graphic_product_brand_metric|safe }}'
+            );
+
+                // =========================
+                // Gráfico por categoria
+                // =========================
+                var ctxCategory = document
+                .getElementById('ProductByCategoryChart')
+                .getContext('2d');
+
+                var productByCategoryChart = new Chart(ctxCategory, {
+
+                    type: 'doughnut',
+
+                    data: {
+
+                        labels: Object.keys(productCountByCategory),
+
+                        datasets: [{
+                            data: Object.values(productCountByCategory),
+                            borderWidth: 1
+                        }]
+
+                    },
+
+                    options: {
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        }
+
+                    }
+
+                });
+
+                // =========================
+                // Gráfico por marca
+                // =========================
+                var ctxBrand = document
+                .getElementById('ProductByBrandChart')
+                .getContext('2d');
+
+                var productByBrandChart = new Chart(ctxBrand, {
+
+                    type: 'doughnut',
+
+                    data: {
+
+                        labels: Object.keys(productCountByBrand),
+
+                        datasets: [{
+                            data: Object.values(productCountByBrand),
+                            borderWidth: 1
+                        }]
+
+                    },
+
+                    options: {
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            }
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        </script>
     </div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    var productCountByCategory = JSON.parse(
-    '{{ graphic_product_category_metric|safe }}'
-);
-
-var productCountByBrand = JSON.parse(
-    '{{ graphic_product_brand_metric|safe }}'
-);
-
-    // =========================
-    // Gráfico por categoria
-    // =========================
-    var ctxCategory = document
-    .getElementById('ProductByCategoryChart')
-    .getContext('2d');
-
-    var productByCategoryChart = new Chart(ctxCategory, {
-
-        type: 'doughnut',
-
-        data: {
-
-            labels: Object.keys(productCountByCategory),
-
-            datasets: [{
-                data: Object.values(productCountByCategory),
-                borderWidth: 1
-            }]
-
-        },
-
-        options: {
-
-            plugins: {
-
-                legend: {
-                    display: false
-                }
-
-            }
-
-        }
-
-    });
-
-    // =========================
-    // Gráfico por marca
-    // =========================
-    var ctxBrand = document
-    .getElementById('ProductByBrandChart')
-    .getContext('2d');
-
-    var productByBrandChart = new Chart(ctxBrand, {
-
-        type: 'doughnut',
-
-        data: {
-
-            labels: Object.keys(productCountByBrand),
-
-            datasets: [{
-                data: Object.values(productCountByBrand),
-                borderWidth: 1
-            }]
-
-        },
-
-        options: {
-
-            plugins: {
-
-                legend: {
-                    display: false
-                }
-
-            }
-
-        }
-
-    });
-
-});
-
-</script>
+{% endif %}
 
 {% endblock %}
