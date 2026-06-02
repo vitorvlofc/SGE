@@ -47,6 +47,6 @@ class OutflowCreateListAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.OutflowSerializer
 
 
-class OutflowRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class OutflowRetrieveAPIView(generics.RetrieveAPIView):
     queryset = models.Outflow.objects.all()
     serializer_class = serializers.OutflowSerializer

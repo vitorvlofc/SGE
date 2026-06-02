@@ -41,6 +41,6 @@ class InflowCreateListAPIView(generics.ListCreateAPIView):
     serializer_class = serializers.InflowSerializer
 
 
-class InflowRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class InflowRetrieveAPIView(generics.RetrieveAPIView):
     queryset = models.Inflow.objects.all()
     serializer_class = serializers.InflowSerializer
